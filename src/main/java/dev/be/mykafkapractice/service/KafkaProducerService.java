@@ -21,21 +21,7 @@ public class KafkaProducerService {
     }
 
     public void sendWithCallBack(String message) {
-//        Deprecated
-//        ListenableFuture<SendResult<String, String>> future1 = kafkaTemplate.send(TOPIC_NAME, message);
         CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send(TOPIC_NAME, message);
-
-//        future1.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
-//            @Override
-//            public void onFailure(Throwable ex) {
-//                log.warn("failed : {}  due to : {}", message, ex.getMessage());
-//            }
-//
-//            @Override
-//            public void onSuccess(SendResult<String, String> result) {
-//                log.info("message : {}  offset : {}", message, result.getRecordMetadata().offset());
-//            }
-//        });
 
         future.whenComplete(
                 (result, ex) -> {
@@ -46,5 +32,34 @@ public class KafkaProducerService {
                     }
                 }
         );
+    }
+
+    //https://stackoverflow.com/questions/77951258/replacing-listenablefuture-with-completablefuture-in-kafka-producer-consumer
+    public void sendWithCallbackVer2(String message){
+        CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send(TOPIC_NAME, message);
+
+        future
+                .thenAcceptAsync(result -> log.info("message : {} offset : {}", message, result.getRecordMetadata().offset()))
+                .exceptionallyAsync(throwable -> {
+                    log.warn("failed : {}  due to : {}", message, throwable.getMessage());
+                    return null;
+                    //this usually lets you handle exceptions - like providing a value in case or errors - so you can continue the chain, but in this case, nothing doing so...
+                });
+    }
+
+    private void sendWithCallbackDeprecated(String message) {
+//        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(TOPIC_NAME, message);
+//
+//        future.addCallback(new ListenableFutureCallback<>() {
+//            @Override
+//            public void onFailure(Throwable ex) {
+//                log.warn("failed : {}  due to : {}", message, ex.getMessage());
+//            }
+//
+//            @Override
+//            public void onSuccess(SendResult<String, String> result) {
+//                log.info("message : {}  offset : {}", message, result.getRecordMetadata().offset());
+//            }
+//        });
     }
 }
