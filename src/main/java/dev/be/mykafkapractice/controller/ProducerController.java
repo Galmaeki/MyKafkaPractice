@@ -11,9 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProducerController {
 
     private final KafkaProducerService kafkaProducerService;
+
     @GetMapping("/pub")
-    public String publish(@RequestParam String message){
+    public String publish(@RequestParam String message) {
         kafkaProducerService.send(message);
+        return message;
+    }
+
+    @GetMapping("/pub2")
+    public String publishWithCallback(@RequestParam String message) {
+        kafkaProducerService.sendWithCallBack(message);
         return message;
     }
 }
