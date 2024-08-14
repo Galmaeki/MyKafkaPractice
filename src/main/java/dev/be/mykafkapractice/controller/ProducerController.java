@@ -1,5 +1,6 @@
 package dev.be.mykafkapractice.controller;
 
+import dev.be.mykafkapractice.dto.MessageDto;
 import dev.be.mykafkapractice.service.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,12 @@ public class ProducerController {
     @GetMapping("/pub2")
     public String publishWithCallback(@RequestParam String message) {
         kafkaProducerService.sendWithCallBack(message);
+        return message;
+    }
+
+    @GetMapping("/pub3")
+    public MessageDto publishJson(MessageDto message){
+        kafkaProducerService.sendJson(message);
         return message;
     }
 }

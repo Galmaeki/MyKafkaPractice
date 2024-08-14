@@ -1,5 +1,6 @@
 package dev.be.mykafkapractice.service;
 
+import dev.be.mykafkapractice.dto.MessageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public class KafkaProducerService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, MessageDto> newKafkaTemplate;
     private final static String TOPIC_NAME = "springTopic";
 
     public void send(String message) {
@@ -61,5 +63,9 @@ public class KafkaProducerService {
 //                log.info("message : {}  offset : {}", message, result.getRecordMetadata().offset());
 //            }
 //        });
+    }
+
+    public void sendJson(MessageDto message){
+        newKafkaTemplate.send(TOPIC_NAME,message);
     }
 }
