@@ -1,4 +1,4 @@
-package dev.be.mykafkapractice;
+package dev.be.mykafkapractice.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.be.mykafkapractice.dto.MessageDto;
